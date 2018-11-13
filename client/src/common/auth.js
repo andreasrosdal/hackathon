@@ -32,3 +32,10 @@ export function hasIdeaWriteAccess(idea: Idea, auth: User) {
     hasRole(auth, Role.ADMINISTRATOR)
   );
 }
+
+export function hasAdminModeratorAccess(idea: Idea, auth: User) {
+    return (
+        hasRole(auth, Role.MODERATOR) ||
+        hasRole(auth, Role.ADMINISTRATOR)
+    );
+}

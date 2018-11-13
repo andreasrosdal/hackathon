@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface IdeaRepository extends CrudRepository<Idea, UUID> {
 
-	List<Idea> findAllByOrderByCreatedDesc();
+	List<Idea> findAllByOrderByStickyDescCreatedDesc();
 
 	List<Idea> findAllByCreatedByOrderByCreatedDesc(User user);
 

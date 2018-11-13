@@ -28,6 +28,7 @@ const IdeaDetailsComponent = (props: {
   addComment: (content: string, idea: Idea) => any,
   editingIdea: boolean,
   toggleLike: (idea: Idea) => any,
+  toggleSticky: (idea: Idea) => any,
   deleteIdea: (idea: Idea) => any,
   editIdea: (idea: Idea) => any,
   cancelEditing: (idea: Idea) => any,
@@ -46,6 +47,7 @@ const IdeaDetailsComponent = (props: {
         }
         editingIdea={props.editingIdea}
         toggleLike={props.toggleLike}
+        toggleSticky={props.toggleSticky}
         deleteIdea={props.deleteIdea}
         editIdea={props.editIdea}
         cancelEditing={props.cancelEditing}
@@ -58,6 +60,7 @@ const IdeaDetailsComponent = (props: {
 class IdeaDetails extends React.Component<
   {
     toggleLike: (idea: Idea) => any,
+    toggleSticky: (idea: Idea) => any,
     deleteIdea: (idea: Idea) => any,
     editIdea: (idea: Idea) => any,
     cancelEditing: (idea: Idea) => any,
@@ -348,6 +351,9 @@ const mapDispatchToProps: any = dispatch => {
   return {
     toggleLike: (idea: Idea) => {
       dispatch({ type: "TOGGLE_LIKE_IDEA", data: { idea: idea } });
+    },
+    toggleSticky: (idea: Idea) => {
+      dispatch({ type: "TOGGLE_STICKY_IDEA", data: { idea: idea } });
     },
     deleteIdea: (idea: Idea) => {
       dispatch({ type: "DELETE_IDEA", data: { uuid: idea.uuid } });

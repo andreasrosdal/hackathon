@@ -1,4 +1,5 @@
 // @flow
+StarBorder// @flow
 
 import React from "react";
 import moment from "moment";
@@ -11,11 +12,13 @@ import ReactMarkdown from "react-markdown";
 import ThumbUpSharp from "@material-ui/icons/ThumbUpSharp";
 import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
+import Star from "@material-ui/icons/Star";
+import StarBorder from "@material-ui/icons/StarBorder";
 
 import type { User, Idea, Hackathon } from "../common/types";
 
 import { joinNatural, getUserInitials } from "../common/util";
-import { hasIdeaWriteAccess } from "../common/auth";
+import { hasIdeaWriteAccess, hasAdminModeratorAccess } from "../common/auth";
 
 function getHackathonDescription(hackathon: Hackathon) {
   return { __html: hackathon.description };
@@ -29,6 +32,7 @@ const IdeaComponent = (props: {
   toggleLike: (idea: Idea) => any,
   showDetails: (idea: Idea) => any,
   deleteIdea: (idea: Idea) => any,
+  toggleSticky: (idea: idea) => any,
   editIdea: (idea: Idea) => any
 }) => (
   <div>
@@ -59,6 +63,7 @@ const IdeaComponent = (props: {
               key={idea.uuid}
               idea={idea}
               toggleLike={props.toggleLike}
+              toggleSticky={props.toggleSticky}
               showDetails={props.showDetails}
               deleteIdea={props.deleteIdea}
               editIdea={props.editIdea}
@@ -145,6 +150,7 @@ const IdeaEntry = (props: {
   toggleLike: (idea: Idea) => any,
   showDetails: (idea: Idea) => any,
   deleteIdea: (idea: Idea) => any,
+  toggleSticky: (idea: Idea) => any,
   editIdea: (idea: Idea) => any
 }) => (
   <div className="ideas--entry box">
@@ -188,6 +194,30 @@ const IdeaEntry = (props: {
           >
             {props.idea.title}
           </a>
+            {props.idea.sticky && (
+              <span className="ideas--entry--sticky">
+              <Star
+                title="Toggle sticky idea"
+                onClick={() =>
+                    confirm("Toggle sticky idea " + props.idea.title + "?") &&
+                    props.toggleSticky(props.idea)
+                }
+              />
+
+            </span>
+            )}
+            {!props.idea.sticky && (
+                <span className="ideas--entry--sticky">
+              <StarBorder
+                  title="Toggle sticky idea"
+                  onClick={() =>
+                      confirm("Toggle sticky idea " + props.idea.title + "?") &&
+                      props.toggleSticky(props.idea)
+                  }
+              />
+
+            </span>
+            )}
         </span>
 
         <span
@@ -260,6 +290,9 @@ const mapDispatchToProps: any = dispatch => {
     },
     deleteIdea: (idea: Idea) => {
       dispatch({ type: "DELETE_IDEA", data: { uuid: idea.uuid } });
+    },
+    toggleSticky: (idea: Idea) => {
+      dispatch({ type: "TOGGLE_STICKY_IDEA", data: { idea: idea } });
     }
   };
 };

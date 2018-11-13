@@ -71,6 +71,27 @@ function* toggleLike(action: { type: string, data: { idea: Idea } }): * {
   yield put({ type: "IDEAS_REQUESTED", data }); // TODO update the list in LIKE_TOGGELED
 }
 
+function* toggleSticky(action: { type: string, data: { idea: Idea } }): * {
+    const state = yield select();
+    const authUser = state.auth;
+
+    const operation = action.data.idea.sticky  ? "unstick" : "sticky";
+
+    const response = yield call(
+        fetch,
+        "/api/idea/" + action.data.idea.uuid + "/" + operation,
+        {
+            method: "put",
+            credentials: "same-origin"
+        }
+    );
+    const data = yield call([response, response.json]);
+
+    yield put({ type: "LIKE_TOGGELED", data });
+    yield put({ type: "IDEAS_REQUESTED", data });
+}
+
+
 function* fetchActiveHackathon(): * {
   try {
     const response = yield call(fetch, "/api/hackathon/active", {
@@ -90,5 +111,6 @@ export default [
 
   takeEvery("CREATE_IDEA", createIdea),
   takeEvery("DELETE_IDEA", deleteIdea),
-  takeEvery("TOGGLE_LIKE_IDEA", toggleLike)
+  takeEvery("TOGGLE_LIKE_IDEA", toggleLike),
+  takeEvery("TOGGLE_STICKY_IDEA", toggleSticky)
 ];

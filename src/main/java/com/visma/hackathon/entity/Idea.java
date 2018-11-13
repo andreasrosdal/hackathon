@@ -67,6 +67,10 @@ public class Idea {
 	@Transient
 	private int numberOfComments;
 
+
+	@Column(name="sticky")
+	private boolean sticky = false;
+
 	public Idea() {
 
 	}
@@ -150,6 +154,13 @@ public class Idea {
 		this.numberOfComments = numberOfComments;
 	}
 
+	public boolean isSticky() {
+		return sticky;
+	}
+
+	public void setSticky(boolean sticky) {
+		this.sticky = sticky;
+	}
 
 	@Override
 	public String toString() {

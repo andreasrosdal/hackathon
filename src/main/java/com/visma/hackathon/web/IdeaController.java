@@ -59,7 +59,7 @@ public class IdeaController {
 			User user = userRepository.findUserByEmail(createdBy).orElseThrow(() -> new ObjectNotFoundException(createdBy, "User" ));
 			return ideaRepository.findAllByCreatedByOrderByCreatedDesc(user);
 		}
-		List<Idea> ideas = new ArrayList<>(ideaRepository.findAllByOrderByCreatedDesc());
+		List<Idea> ideas = new ArrayList<>(ideaRepository.findAllByOrderByStickyDescCreatedDesc());
 		ideas.forEach(idea -> idea.setNumberOfComments(ideaCommentRepository.countIdeaCommentsByIdea(idea)));
 
 		return ideas;
@@ -131,6 +131,17 @@ public class IdeaController {
 		return updateUserLike(uuid, false);
 	}
 
+	@PutMapping("{uuid}/sticky")
+	public Idea sticky(@PathVariable UUID uuid) {
+		return toggleStickyIdea(uuid, true);
+	}
+
+	@PutMapping("{uuid}/unstick")
+	public Idea unsticky(@PathVariable UUID uuid) {
+		return toggleStickyIdea(uuid, false);
+	}
+
+
 	private Idea updateUserLike(UUID ideaId, boolean liked) {
 		User user = authService.getLoggedInUser();
 		Optional<Idea> ideaOptional = ideaRepository.findById(ideaId);
@@ -142,6 +153,16 @@ public class IdeaController {
 		else likes.remove(user);
 
 		log.info("Updated like status for idea " + idea + " to " + (liked ? "liked" : "not liked"));
+
+		return ideaRepository.save(idea);
+	}
+
+	private Idea toggleStickyIdea(UUID ideaId, boolean sticky) {
+		User user = authService.getLoggedInUser();
+		Optional<Idea> ideaOptional = ideaRepository.findById(ideaId);
+
+		Idea idea = ideaOptional.orElseThrow(() -> new ObjectNotFoundException(ideaId, "Idea"));
+		idea.setSticky(!idea.isSticky());
 
 		return ideaRepository.save(idea);
 	}

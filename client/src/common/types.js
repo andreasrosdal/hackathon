@@ -18,6 +18,7 @@ export type Idea = {
   createdBy: User,
   created: string,
   likes: Array<User>,
+  sticky: boolean,
   numberOfComments?: number
 };
 
